@@ -87,7 +87,18 @@ Join PortfolioProject01..CovidVaccinations vac
 	On dea.location = vac.location
 	and dea.date = vac.date
 
---- Looking At Total Population Vs Vaccinations --USE CTE--
+--- Looking At Total Population Vs Vaccinations 
+
+Select dea.continent, dea.location, dea.date, dea.population, vac.new_vaccinations,
+SUM(CONVERT(int, vac.new_vaccinations)) OVER (Partition by dea.location Order by dea.location, dea.date) as RollingPeopleVaccinated
+From PortfolioProject01..CovidDeaths dea
+Join PortfolioProject01..CovidVaccinations vac
+	On dea.location = vac.location
+	and dea.date = vac.date
+where dea.continent is not null
+order by 2,3
+
+--USE CTE
 
 With PopvsVac ( Continent, Location, Date, Population, New_Vaccinations, RollingPeopleVaccinated)
 as
